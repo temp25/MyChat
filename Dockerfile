@@ -1,27 +1,40 @@
-FROM registry.centos.org/che-stacks/centos-stack-base
+# Copyright (c) 2012-2016 Codenvy, S.A.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+# Contributors:
+# Codenvy, S.A. - initial API and implementation
 
-MAINTAINER Dharmit Shah <dshah@redhat.com>
+FROM eclipse/stack-base:debian
+
+RUN sudo apt-get update && \
+    sudo apt-get -y install build-essential libkrb5-dev gcc make ruby-full rubygems debian-keyring python2.7 && \
+    sudo gem install --no-rdoc --no-ri sass -v 3.4.22 && \
+    sudo gem install --no-rdoc --no-ri compass && \
+    sudo apt-get clean && \
+    sudo apt-get -y autoremove && \
+    sudo apt-get -y clean && \
+    sudo rm -rf /var/lib/apt/lists/*
+
+RUN  apt-get update -qqy \
+  && apt-get install -y --no-install-recommends \
+     build-essential \
+     node-gyp \
+     nodejs-dev \
+     libssl1.0-dev \
+     liblz4-dev \
+     libpthread-stubs0-dev \
+     libsasl2-dev \
+     libsasl2-modules \
+     make \
+     python \
+     nodejs npm ca-certificates \
+  && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
+
+RUN wget -qO- https://deb.nodesource.com/setup_8.x | sudo -E bash -
+RUN sudo apt update && sudo apt -y install nodejs
 
 EXPOSE 1337 3000 4200 5000 9000 8003
+RUN sudo npm install --unsafe-perm -g yarn gulp bower grunt grunt-cli yeoman-generator yo generator-angular generator-karma generator-webapp typescript typescript-language-server
 LABEL che:server:8003:ref=angular che:server:8003:protocol=http che:server:3000:ref=node-3000 che:server:3000:protocol=http che:server:9000:ref=node-9000 che:server:9000:protocol=http
-
-RUN sudo yum update -y && \
-    sudo yum -y install rh-nodejs8 && \
-    sudo yum -y groupinstall 'Development Tools' && \
-    sudo yum -y install libssl1.0-dev && \
-    sudo yum -y install liblz4-dev && \
-    sudo yum -y install libpthread-stubs0-dev && \
-    sudo yum -y install libsasl2-dev && \
-    sudo yum -y install libsasl2-modules && \
-    sudo yum -y install make && \
-    sudo yum -y install python && \
-    sudo yum -y install nodejs npm ca-certificates && \
-    sudo yum -y clean all && \
-    sudo ln -s /opt/rh/rh-nodejs8/root/usr/bin/node /usr/local/bin/nodejs && \
-    sudo scl enable rh-nodejs8 'npm install --unsafe-perm -g gulp bower grunt grunt-cli yeoman-generator yo generator-angular generator-karma generator-webapp' && \
-    cat /opt/rh/rh-nodejs8/enable >> /home/user/.bashrc
-
-ENV PATH=/opt/rh/rh-nodejs8/root/usr/bin${PATH:+:${PATH}}
-ENV LD_LIBRARY_PATH=/opt/rh/rh-nodejs8/root/usr/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
-ENV PYTHONPATH=/opt/rh/rh-nodejs8/root/usr/lib/python2.7/site-packages${PYTHONPATH:+:${PYTHONPATH}}
-ENV MANPATH=/opt/rh/rh-nodejs8/root/usr/share/man:$MANPATH
