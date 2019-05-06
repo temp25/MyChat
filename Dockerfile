@@ -8,8 +8,6 @@ LABEL che:server:8003:ref=angular che:server:8003:protocol=http che:server:3000:
 RUN sudo yum update -y && \
     sudo yum -y install rh-nodejs8 && \
     sudo yum -y groupinstall 'Development Tools' && \
-    sudo yum -y install node-gyp && \
-    sudo yum -y install nodejs-dev && \
     sudo yum -y install libssl1.0-dev && \
     sudo yum -y install liblz4-dev && \
     sudo yum -y install libpthread-stubs0-dev && \
