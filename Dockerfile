@@ -9,28 +9,13 @@
 FROM eclipse/stack-base:debian
 
 RUN sudo apt-get update && \
-    sudo apt-get -y install build-essential libkrb5-dev gcc make ruby-full rubygems debian-keyring python2.7 && \
+    sudo apt-get -y install build-essential libkrb5-dev libssl1.0-dev liblz4-dev libpthread-stubs0-dev libsasl2-dev libsasl2-modules gcc make ruby-full rubygems debian-keyring python2.7 && \
     sudo gem install --no-rdoc --no-ri sass -v 3.4.22 && \
     sudo gem install --no-rdoc --no-ri compass && \
     sudo apt-get clean && \
     sudo apt-get -y autoremove && \
     sudo apt-get -y clean && \
     sudo rm -rf /var/lib/apt/lists/*
-
-RUN  apt-get update -qqy \
-  && apt-get install -y --no-install-recommends \
-     build-essential \
-     node-gyp \
-     nodejs-dev \
-     libssl1.0-dev \
-     liblz4-dev \
-     libpthread-stubs0-dev \
-     libsasl2-dev \
-     libsasl2-modules \
-     make \
-     python \
-     nodejs npm ca-certificates \
-  && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 
 RUN wget -qO- https://deb.nodesource.com/setup_8.x | sudo -E bash -
 RUN sudo apt update && sudo apt -y install nodejs
